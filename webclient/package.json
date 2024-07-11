@@ -1,0 +1,59 @@
+{
+  "name": "webclient",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-async-generator-functions": "^7.24.7",
+    "@babel/plugin-transform-class-properties": "^7.24.7",
+    "@babel/plugin-transform-dynamic-import": "^7.24.7",
+    "@babel/plugin-transform-json-strings": "^7.24.7",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.24.7",
+    "@babel/plugin-transform-numeric-separator": "^7.24.7",
+    "@babel/plugin-transform-object-rest-spread": "^7.24.7",
+    "@babel/plugin-transform-optional-catch-binding": "^7.24.7",
+    "@babel/plugin-transform-optional-chaining": "^7.24.7",
+    "@babel/plugin-transform-unicode-property-regex": "^7.24.7",
+    "@sideway/address": "^5.0.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.2",
+    "joi": "^17.13.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet": "^6.1.0",
+    "react-icons": "^5.2.1",
+    "react-router-dom": "^6.24.1",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:5193",
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "globals": {
+      "VANTA": "readonly"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #42455a;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #00c2cb;
+}
+
+header nav a {
+    padding: 10px 20px;
+    font-size: 2rem;
+    color: #e0ffff;
+    border-radius: 5px;
+    letter-spacing: 0.5px;
+}
+
+header nav a:hover,
+header nav a.active {
+    background: #00c2cb;
+    color: #42455a;
+    transition: 0.5s ease-out;
+    letter-spacing: 2px;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
