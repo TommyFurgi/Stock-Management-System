@@ -1,0 +1,79 @@
+.clients-table-container {
+    margin: 20px;
+    background-color: rgba(52, 248, 183, 0.3);
+    padding: 20px;
+    border-radius: 25px;
+  }
+  
+  .clients-table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 20px auto; 
+  }
+  
+  .clients-table th,
+  .clients-table td {
+    border: 2px solid #f3a0a0;
+    padding: 8px;
+  }
+  
+  .clients-table th {
+    background-color: #f0e1b7;
+    text-align: left;
+  }
+  
+  .clients-table tr {
+    background-color: #f9f9f9;
+  }
+  
+  .clients-table tr:hover {
+    background-color: #dad8d8;
+  }
+  
+  .clients-table a {
+    text-decoration: none;
+    font-weight: bold;
+    color: inherit;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .head-container {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+  }
+  
+  .head-container h1 {
+    font-size: 26px; 
+    margin: 0; 
+    margin-left: 10vw;
+  }
+  
+  .search-container label {
+    font-size: 16px; 
+    margin-right: 10px;
+    font-weight: bold; 
+  }
+  
+  .search-container input {
+    font-size: 16px;
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    flex: 1; 
+    margin-right: 5vw; 
+  }
+  
+  .clear-icon {
+    position: absolute; 
+    right: 10px;
+    cursor: pointer; 
+    margin-right: 5vw; 
+  }
+  
+  
