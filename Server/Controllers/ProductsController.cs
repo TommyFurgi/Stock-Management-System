@@ -99,5 +99,15 @@ namespace Server.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
+
+        [HttpGet("max-values")]
+        public async Task<IActionResult> GetMaxValues()
+        {
+            var maxPrice = await _context.Products.MaxAsync(p => (double)p.Price);
+            var maxQuantity = await _context.Products.MaxAsync(p => (int)p.Quantity);
+
+            return Ok(new { MaxPrice = maxPrice, MaxQuantity = maxQuantity });
+        }
+
     }
 }
