@@ -7,6 +7,14 @@
     margin-left: 10vw;
     margin-right: 10vw;
 }
+
+.add-new-container-product {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
   
 .add-new-form {
     display: flex;
@@ -16,14 +24,18 @@
 .add-new-form label {
     margin: 5px 0;
 }
-  
+
+.add-new-form input[type="date"], 
+.add-new-form textarea,
 .add-new-form input {
     padding: 8px;
     margin: 5px 0 15px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
-  
+
 .error {
     color: red;
     font-size: 12px;
@@ -47,12 +59,16 @@
 .button-group button[type="submit"] {
     background-color: #4CAF50;
     color: white;
-    width: 10vw;
+    min-width: 8vw;
 }
   
 .button-group button[type="reset"] {
     background-color: #f44336;
     color: white;
-    width: 5vw;
+    min-width: 5vw;
 }
-  
+
+.add-new-form textarea {
+    resize: vertical;
+    height: 50px;
+}
