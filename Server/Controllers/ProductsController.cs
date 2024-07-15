@@ -4,6 +4,7 @@ using Server.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Server.Controllers
 {
@@ -107,6 +108,34 @@ namespace Server.Controllers
             var maxQuantity = await _context.Products.MaxAsync(p => (int)p.Quantity);
 
             return Ok(new { MaxPrice = maxPrice, MaxQuantity = maxQuantity });
+        }
+
+        [HttpGet("quantity-over-time")]
+        public async Task<IActionResult> GetQuantityOverTime()
+        {
+            var data = await _context.Products
+                .GroupBy(p => p.AvailableFrom)
+                .OrderBy(g => g.Key)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound("No data available");
+            }
+
+            int cumulativeQuantity = 0;
+            var cumulativeData = data.Select(d => new
+            {
+                Date = d.Date,
+                CumulativeQuantity = (cumulativeQuantity += d.Count)
+            }).ToList();
+
+            return Ok(cumulativeData);
         }
 
     }
