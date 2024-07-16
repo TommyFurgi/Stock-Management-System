@@ -1,4 +1,4 @@
-.client-overview-container {
+.profile-overview-container {
   margin: 20px;
   background-color: rgba(52, 248, 183, 0.3);
   padding: 20px;
@@ -8,42 +8,42 @@
   align-items: flex-start;
 }
 
-.client-details {
+.profile-details {
   background-color: white;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 60%;
+  width: 70%;
 }
 
-.client-details-header {
+.profile-details-header {
   display: flex;
   align-items: center;
 }
 
-.client-details img {
+.profile-details img {
   border-radius: 50%;
-  width: 10vw;
+  width: 15vw;
   height: auto;
   margin: 0 40px 0 20px;
 }
 
-.client-info {
+.profile-info {
   flex: 1;
 }
 
-.client-info h2 {
+.profile-info h2 {
   margin-top: 0; 
   margin-bottom: 20px;
   text-align: left;
 }
 
-.client-info p {
+.profile-info p {
   font-size: 16px;
   margin: 10px 0;
 }
 
-.client-info .edit-button {
+.profile-info .edit-button {
   display: block;
   margin-top: 20px;
   padding: 10px 20px;
@@ -55,37 +55,45 @@
   cursor: pointer;
 }
 
-.client-info .edit-button:hover {
+.profile-info .edit-button:hover {
   background-color: #0056b3;
 }
 
-.edit-client-form {
+.edit-profile-form {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 
-.edit-client-form h2 {
+.edit-profile-form h2 {
   margin-top: 0; 
   margin-bottom: 20px;
   text-align: left; 
 }
 
-.edit-client-form input {
+.edit-profile-form input[type="date"], 
+.edit-profile-form textarea,
+.edit-profile-form input {
   margin-bottom: 15px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-.edit-client-form .error {
+.edit-profile-form textarea {
+  resize: vertical;
+}
+
+.edit-profile-form .error {
   color: red;
   margin-bottom: 10px;
 }
 
-.edit-client-form .save-button,
-.edit-client-form .cancel-button {
+.edit-profile-form .save-button,
+.edit-profile-form .cancel-button {
   margin-top: 10px;
   padding: 10px 20px;
   font-size: 16px;
@@ -110,14 +118,14 @@
   width: 8vw;
 }
 
-.edit-client-form .cancel-button {
+.edit-profile-form .cancel-button {
   background-color: #dc3545;
 }
 
-.edit-client-form .save-button:hover {
+.edit-profile-form .save-button:hover {
   background-color: #0056b3;
 }
 
-.edit-client-form .cancel-button:hover {
+.edit-profile-form .cancel-button:hover {
   background-color: #c82333;
 }

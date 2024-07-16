@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import "../styles/Client.css";
+import "../styles/Profile.css";
 
 function ClientDetails() {
   const { id } = useParams(); 
@@ -71,13 +71,13 @@ function ClientDetails() {
   }
 
   return (
-    <div className="client-overview-container">
-      <div className="client-details">
-          <div className="client-details-header">
+    <div className="profile-overview-container">
+      <div className="profile-details">
+          <div className="profile-details-header">
             <img src="/images/client-avatar.png" alt="Account-image" />
 
             {editMode ? (
-              <form className="edit-client-form" onSubmit={handleEditClient}>
+              <form className="edit-profile-form" onSubmit={handleEditClient}>
                 <h2>Edit Client</h2>
                 <p><strong>ID:</strong> {client.id}</p>
                 <strong>Name:</strong>
@@ -111,18 +111,18 @@ function ClientDetails() {
               </form>
             ) : (
 
-            <div className="client-info">
+            <div className="profile-info">
               <h2>Client Details</h2>
               <p><strong>ID:</strong> {client.id}</p>
-              <div className="client-field">
+              <div className="profile-field">
                 <strong>Name:</strong>
                 <p>{client.name}</p>
               </div>
-              <div className="client-field">
+              <div className="profile-field">
                 <strong>Email:</strong>
                 <p>{client.email}</p>
               </div>
-              <div className="client-field">
+              <div className="profile-field">
                 <strong>Phone Number:</strong>
                 <p>{client.phoneNumber}</p>
               </div>
