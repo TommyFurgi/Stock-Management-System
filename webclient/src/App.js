@@ -4,6 +4,7 @@ import ClientsList from './components/ClientsList';
 import Client from './components/Client';
 import Home from './components/Home';
 import ProductsList from './components/ProductsList';
+import Product from './components/Product';
 import { Helmet } from 'react-helmet';
 import './styles/App.css';
 import Menu from './components/Menu';
@@ -74,6 +75,7 @@ function App() {
               <Route path="/clients" element={<ClientsList />} />
               <Route path="/clients/:id" element={<Client />} /> 
               <Route path="/products" element={<ProductsList />} />
+              <Route path="/products/:id" element={<Product />} />
             </Routes>
           </div>
         </div>
