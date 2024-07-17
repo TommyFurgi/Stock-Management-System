@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Data;
 
@@ -10,9 +11,11 @@ using Server.Data;
 namespace Stock_Management_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240716211716_UpdateInvoiceAndInvoiceItem")]
+    partial class UpdateInvoiceAndInvoiceItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -55,17 +58,11 @@ namespace Stock_Management_System.Migrations
                     b.Property<decimal>("Discount")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("NumberOfProducts")
-                        .HasColumnType("INTEGER");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("TotalQuantity")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -82,9 +79,6 @@ namespace Stock_Management_System.Migrations
 
                     b.Property<int>("InvoiceId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");

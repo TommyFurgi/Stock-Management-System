@@ -43,7 +43,7 @@ namespace Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Invoice>> PostInvoice(Invoice invoice)
         {
-            invoice.Date = DateTime.UtcNow; // Ustawienie daty na obecną datę i czas UTC
+            invoice.DateOfIssue = DateTime.UtcNow; 
             _context.Invoices.Add(invoice);
             await _context.SaveChangesAsync();
 

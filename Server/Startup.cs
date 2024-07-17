@@ -33,6 +33,10 @@ public class Startup
         });
 
         services.AddAuthorization();
+
+        services.AddScoped<ClientsImporter>();
+        services.AddScoped<ProductsImporter>();
+        services.AddScoped<InvoicesImporter>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
