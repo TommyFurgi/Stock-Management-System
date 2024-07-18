@@ -20,9 +20,23 @@ namespace Server.Controllers
 
         // GET: api/Invoices
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Invoice>>> GetInvoices()
+        public async Task<ActionResult<IEnumerable<InvoicesViewModel>>> GetInvoices()
         {
-            return await _context.Invoices.ToListAsync();
+            var invoices = await _context.Invoices
+                .Select(i => new InvoicesViewModel
+                {
+                    Id = i.Id,
+                    ClientName = i.Client.Name,
+                    DateOfIssue = i.DateOfIssue,
+                    Price = i.Price,
+                    Discount = i.Discount,
+                    TotalAmount = i.TotalAmount,
+                    NumberOfProducts = i.NumberOfProducts,
+                    TotalQuantity = i.TotalQuantity
+                })
+                .ToListAsync();
+
+             return invoices;
         }
 
         // GET: api/Invoices/5
