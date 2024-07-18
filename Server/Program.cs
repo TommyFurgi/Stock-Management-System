@@ -14,8 +14,10 @@ public class Program
         
         // Remove this comment on first run to import data into the database
         // ImportData(host);
+        
         host.Run();
     }
+
     
     private static void ImportData(IHost host)
     {

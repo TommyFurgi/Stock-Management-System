@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { MdClear } from 'react-icons/md';
 import '../styles/ProductsList.css';
+import '../styles/Table.css';
+import '../styles/Filter.css';
 import AddNewProduct from './AddNewProduct';
 import ProductsQuantityOverTimeChart from './ProductsQuantityOverTimeChart';
 
@@ -137,7 +139,7 @@ function ProductsList() {
   const emptyRows = Array.from({ length: emptyRowsCount > 0 ? emptyRowsCount : 0 }, (_, index) => index);
 
   return (
-    <div className="products-table-container">
+    <div className="table-container">
       <div className="head-container">
         <h1>Products List</h1>
         <div className="search-container">
@@ -154,9 +156,9 @@ function ProductsList() {
           )}
         </div>
       </div>
-      <div className="products-container">
-        <div className="products-list">
-          <table className="products-table">
+      <div className="data-container">
+        <div className="content-list">
+          <table className="table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -170,7 +172,7 @@ function ProductsList() {
               {displayedProducts.length > 0 ? (
                 displayedProducts.map(product => (
                   <tr key={product.id}>
-                    <td><Link to={`/products/${product.id}`} className="product-link">{product.name}</Link></td>
+                    <td><Link to={`/products/${product.id}`} className="link">{product.name}</Link></td>
                     <td>{product.quantity}</td>
                     <td>{product.price}</td>
                     <td>{formatDate(product.availableFrom)}</td>
