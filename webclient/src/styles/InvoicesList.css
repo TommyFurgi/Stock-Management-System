@@ -1,0 +1,42 @@
+.table-container {
+  margin: 20px;
+  background-color: rgba(52, 248, 183, 0.3);
+  padding: 20px;
+  border-radius: 25px;
+}
+  
+.data-container {
+  width: 100%;
+  display: flex;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px auto; 
+}
+
+.content-list {
+  width: 60%;
+}
+
+.head-container {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+}
+  
+.head-container h1 {
+  font-size: 26px; 
+  margin: 0; 
+  margin-left: 10vw;
+}
+
+.side-container {
+  width: 40%;
+  position: relative;
+  margin: auto;
+  margin-left: 20px; 
+  height: 100%;
+  padding: 20px;
+}

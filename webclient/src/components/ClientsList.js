@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { MdClear } from 'react-icons/md';
 import '../styles/ClientsList.css';
+import '../styles/Table.css';
 import AddNewClient from './AddNewClient';
 
 function ClientsList() {
@@ -25,7 +26,7 @@ function ClientsList() {
   };
 
   return (
-    <div className="clients-table-container">
+    <div className="table-container">
       
       <div className="head-container">
         <h1>Clients List</h1>
@@ -44,7 +45,7 @@ function ClientsList() {
         </div>
       </div>
 
-      <table className="clients-table">
+      <table className="table">
         <thead>
           <tr>
             <th>Name</th>
@@ -55,7 +56,7 @@ function ClientsList() {
         <tbody>
           {clients.filter(client => client.name.toLowerCase().includes(searchTerm.toLowerCase())).map(filteredClient => (
             <tr key={filteredClient.id}>
-              <td><Link to={`/clients/${filteredClient.id}`} className="client-link">{filteredClient.name}</Link></td>
+              <td><Link to={`/clients/${filteredClient.id}`} className="link">{filteredClient.name}</Link></td>
               <td>{filteredClient.email}</td>
               <td>{filteredClient.phoneNumber}</td>
             </tr>
