@@ -9,6 +9,7 @@ import Home from './components/Home';
 import ProductsList from './components/ProductsList';
 import Product from './components/Product';
 import InvoicesList from './components/InvoicesList'
+import Invoice from './components/Invoice'
 
 function App() {
 
@@ -78,6 +79,7 @@ function App() {
               <Route path="/products" element={<ProductsList />} />
               <Route path="/products/:id" element={<Product />} />
               <Route path="/invoices" element={<InvoicesList />} />
+              <Route path="/invoices/:id" element={<Invoice />} />
             </Routes>
           </div>
         </div>

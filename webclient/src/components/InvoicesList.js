@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import '../styles/InvoicesList.css';
 import '../styles/Table.css';
 import '../styles/Filter.css';
@@ -186,14 +187,14 @@ function InvoicesList() {
               {displayedInvoices.length > 0 ? (
                 displayedInvoices.map(invoice => (
                   <tr key={invoice.id}>
-                    <td>{invoice.id}</td>
-                    <td>{invoice.clientName ? invoice.clientName : 'Unknown Client'}</td>
-                    <td>{formatDate(invoice.dateOfIssue)}</td>
-                    <td>{invoice.numberOfProducts}</td>
-                    <td>{invoice.totalQuantity}</td>
-                    <td>{invoice.price}</td>
-                    <td>{invoice.discount}</td>
-                    <td>{invoice.totalAmount}</td>
+                      <td><Link to={`/invoices/${invoice.id}`} className="link">{invoice.id}</Link></td>
+                      <td>{invoice.clientName ? invoice.clientName : 'Unknown Client'}</td>
+                      <td>{formatDate(invoice.dateOfIssue)}</td>
+                      <td>{invoice.numberOfProducts}</td>
+                      <td>{invoice.totalQuantity}</td>
+                      <td>{invoice.price}</td>
+                      <td>{invoice.discount}</td>
+                      <td>{invoice.totalAmount}</td>
                   </tr>
                 ))
               ) : (

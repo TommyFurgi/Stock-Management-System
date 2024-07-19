@@ -39,16 +39,39 @@ namespace Server.Controllers
              return invoices;
         }
 
-        // GET: api/Invoices/5
+        /// GET: api/Invoices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Invoice>> GetInvoice(int id)
+        public async Task<ActionResult<SingleInvoiceViewModel>> GetInvoice(int id)
         {
-            var invoice = await _context.Invoices.FindAsync(id);
+            var invoiceEntity = await _context.Invoices
+                .Include(i => i.Client) 
+                .Include(i => i.InvoiceItems) 
+                .FirstOrDefaultAsync(i => i.Id == id);
 
-            if (invoice == null)
+            if (invoiceEntity == null)
             {
                 return NotFound();
             }
+
+            var invoiceItems = new List<int>();
+
+            foreach (InvoiceItem invoiceItem in invoiceEntity.InvoiceItems)
+            {
+                invoiceItems.Add(invoiceItem.Id);
+            }
+
+            var invoice = new SingleInvoiceViewModel
+            {
+                Id = invoiceEntity.Id,
+                ClientId = invoiceEntity.Client.Id,
+                DateOfIssue = invoiceEntity.DateOfIssue,
+                Price = invoiceEntity.Price,
+                Discount = invoiceEntity.Discount,
+                TotalAmount = invoiceEntity.TotalAmount,
+                NumberOfProducts = invoiceEntity.NumberOfProducts,
+                TotalQuantity = invoiceEntity.TotalQuantity,
+                InvoiceItems = invoiceItems
+            };
 
             return invoice;
         }
