@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import InvoiceItemsTable from './InvoiceItemsTable';
+import "../styles/Invoice.css";
 import "../styles/Profile.css";
 
 function InvoiceDetails() {
@@ -16,17 +18,15 @@ function InvoiceDetails() {
       try {
         // Fetch invoice data
         const invoiceResponse = await axios.get(`http://localhost:5193/api/invoices/${id}`);
-        console.log('Invoice API response:', invoiceResponse.data);
         setInvoice(invoiceResponse.data);
 
         // Fetch client data if available
         if (invoiceResponse.data && invoiceResponse.data.clientId) {
           const clientResponse = await axios.get(`http://localhost:5193/api/clients/${invoiceResponse.data.clientId}`);
-          console.log('Client API response:', clientResponse.data);
           setClient(clientResponse.data);
         }
 
-        // Fetch data for each invoice item
+        // Fetch data for each invoice items
         if (invoiceResponse.data && invoiceResponse.data.invoiceItems && invoiceResponse.data.invoiceItems.length > 0) {
           const itemRequests = invoiceResponse.data.invoiceItems.map(itemId => 
             axios.get(`http://localhost:5193/api/invoiceItems/${itemId}`)
@@ -51,36 +51,77 @@ function InvoiceDetails() {
     return <div>Loading...</div>;
   }
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
-    <div className="overview-container">
-        <div className="profile-overview-container">
-            <div className="profile-details">
-                <div className="profile-details-header">
-                    <img src="/images/client-avatar.png" alt="Account-image" />
-                    <div className="profile-info">
-                        <h2>Invoice Client Details</h2>
-                        <p><strong>ID:</strong> {client.id}</p>
-                        <div className="profile-field">
-                            <strong>Name:</strong>
-                            <p>{client.name}</p>
-                        </div>
-                        <div className="profile-field">
-                            <strong>Email:</strong>
-                            <p>{client.email}</p>
-                        </div>
-                        <div className="profile-field">
-                            <strong>Phone Number:</strong>
-                            <p>{client.phoneNumber}</p>
-                        </div>
-                        
-                        
+    <div className="invoice-details-container">
+      <div className="invoice-details-inner">
+        <div className="owner-details">
+            <div className="profile-details-header">
+                <img src="/images/client-avatar.png" alt="Account-image" />
+                <div className="profile-info">
+                    <h2>Invoice Client Details</h2>
+                    <p><strong>ID:</strong> {client.id}</p>
+                    <div className="profile-field">
+                        <strong>Name:</strong>
+                        <p>{client.name}</p>
                     </div>
-                    <Link to={`/clients/${client.id}`} className="profile-link-button">
-                        View Full Profile
-                    </Link>
+                    <div className="profile-field">
+                        <strong>Email:</strong>
+                        <p>{client.email}</p>
+                    </div>
+                    <div className="profile-field">
+                        <strong>Phone Number:</strong>
+                        <p>{client.phoneNumber}</p>
+                    </div>
+                    
+                  <Link to={`/clients/${client.id}`} className="profile-link-button">
+                    View Full Profile
+                  </Link>
                 </div>
+                
             </div>
+              
         </div>
+        <div className="invoice-details">
+          <h2>Invoice Details</h2>
+          <div className="description-field">
+              <strong>Invoice ID:</strong>
+              <p>{invoice.id}</p>
+          </div>
+          <div className="description-field">
+              <strong>Date of Issue:</strong>
+              <p>{formatDate(invoice.dateOfIssue)}</p>
+          </div>
+          <div className="description-field">
+              <strong>Number of Products:</strong>
+              <p>{invoice.numberOfProducts}</p>
+          </div>
+          <div className="description-field">
+              <strong>Total Quantity:</strong>
+              <p>{invoice.totalQuantity}</p>
+          </div>
+          <div className="description-field">
+              <strong>Price:</strong>
+              <p>{invoice.price}</p>
+          </div>
+          <div className="description-field">
+              <strong>Discount:</strong>
+              <p>{invoice.discount}</p>
+          </div>
+          <div className="description-field">
+              <strong>Final cost:</strong>
+              <p>{invoice.totalAmount}</p>
+          </div>
+        </div>
+      </div>
+      <div className="invoice-items-list">
+        
+      </div>
+        <InvoiceItemsTable items={invoiceItems}/>
     </div>
   );
 }

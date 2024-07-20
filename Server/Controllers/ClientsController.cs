@@ -27,16 +27,29 @@ namespace Server.Controllers
 
         // GET: api/Clients/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(int id)
+        public async Task<ActionResult<SingleClientViewModel>> GetClient(int id)
         {
-            var client = await _context.Clients.FindAsync(id);
+            var clientEntity = await _context.Clients
+                .Include(c => c.Invoices)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (client == null)
+            if (clientEntity == null)
             {
                 return NotFound();
             }
 
-            return client;
+            var invoices = clientEntity.Invoices.Select(i => i.Id).ToList();
+
+            var client = new SingleClientViewModel
+            {
+                Id = clientEntity.Id,
+                Name = clientEntity.Name,
+                Email = clientEntity.Email,
+                PhoneNumber = clientEntity.PhoneNumber,
+                InvoicesId = invoices
+            };
+
+            return Ok(client);
         }
 
         // POST: api/Clients

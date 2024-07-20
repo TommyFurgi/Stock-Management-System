@@ -3,7 +3,7 @@
   background-color: rgba(52, 248, 183, 0.3);
   padding: 20px;
   border-radius: 25px;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: flex-start;
 }
@@ -14,6 +14,7 @@
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 70%;
+  margin: 20px auto; 
 }
 
 .profile-details-header {
@@ -141,9 +142,9 @@
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
-  bottom: 20px;
-  right: 20px;
-  align-self: flex-end;
+  white-space: nowrap;
+  text-align: center;
+  margin-top: 20px; 
 }
 
 .profile-link-button:hover {
