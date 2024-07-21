@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import ProductHistoryTable from './ProductHistoryTable';
+import "../styles/Profile.css";
 
 const defaultImage = '/images/default_product.png';
 
 function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [items, setItems] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [editedProduct, setEditedProduct] = useState({
     id: '',
@@ -21,24 +24,40 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`http://localhost:5193/api/products/${id}`)
-      .then(response => {
-        setProduct(response.data);
+    const fetchInvoiceDetails = async () => {
+      try {
+        // Fetch product data
+        const productResponse = await axios.get(`http://localhost:5193/api/products/${id}`);
+        setProduct(productResponse.data);
         setEditedProduct({
-          id: response.data.id,
-          name: response.data.name,
-          description: response.data.description || '',
-          price: response.data.price || 0,
-          quantity: response.data.quantity || 0,
-          imageURL: response.data.imageURL || '',
-          availableFrom: response.data.availableFrom ? response.data.availableFrom.split('T')[0] : '',
+          id: productResponse.data.id,
+          name: productResponse.data.name,
+          description: productResponse.data.description || '',
+          price: productResponse.data.price || 0,
+          quantity: productResponse.data.quantity || 0,
+          imageURL: productResponse.data.imageURL || '',
+          availableFrom: productResponse.data.availableFrom ? productResponse.data.availableFrom.split('T')[0] : '',
         });
+
+        // Fetch data for each invoice items
+        if (productResponse.data && productResponse.data.invoiceItems && productResponse.data.invoiceItems.length > 0) {
+          const itemRequests = productResponse.data.invoiceItems.map(itemId => 
+            axios.get(`http://localhost:5193/api/invoiceItems/${itemId}`)
+          );
+          const itemResponses = await Promise.all(itemRequests);
+          const itemsData = itemResponses.map(response => response.data);          
+          setItems(itemsData);
+        }
+
         setLoading(false);
-      })
-      .catch(error => {
-        console.error(`Error fetching product with ID ${id}:`, error);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setErrors(error.message);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchInvoiceDetails();
   }, [id]);
 
   const handleInputChange = (e) => {
@@ -83,11 +102,6 @@ function ProductDetails() {
         .catch(error => {
           console.error('Error updating product:', error);
           setLoading(false);
-        if (error.response && error.response.data) {
-            setErrors(error.response.data); 
-          } else {
-            setErrors({ general: 'An error occurred while updating the product.' });
-          }
         });
     }
   };
@@ -102,7 +116,7 @@ function ProductDetails() {
     <div className="profile-overview-container">
       <div className="profile-details">
         <div className="profile-details-header">
-          <img src={imageURL} alt="Product Image" />
+          <img src={imageURL} alt="Product img" />
 
           {editMode ? (
             <form className="edit-profile-form" onSubmit={handleEditProduct}>
@@ -195,6 +209,9 @@ function ProductDetails() {
             </div>
           )}
         </div>
+      </div>
+      <div className="items-list">
+        <ProductHistoryTable items={items}/>
       </div>
     </div>
   );
