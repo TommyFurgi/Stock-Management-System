@@ -14,6 +14,11 @@
     width: 100%;
 }
 
+.invoice-items-list {
+    margin-top: 25px;
+    width: 100%;
+}
+
 .owner-details,
 .invoice-details {
     background-color: white;
@@ -42,16 +47,16 @@
     margin: 10px 0;
 }
 
-.profile-field, .description-field {
+.description-field {
     margin-bottom: 5px;
 }
 
-.profile-field strong, .description-field strong {
+.description-field strong {
     display: inline-block;
     width: 150px;
     margin-right: 10px;
 }
 
-.profile-field p, .description-field p {
+.description-field p {
     display: inline-block;
 }

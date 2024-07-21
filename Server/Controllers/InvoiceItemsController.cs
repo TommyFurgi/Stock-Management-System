@@ -27,16 +27,33 @@ namespace Server.Controllers
 
         // GET: api/InvoiceItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<InvoiceItem>> GetInvoiceItem(int id)
+        public async Task<ActionResult<InvoiceItemViewModel>> GetInvoiceItem(int id)
         {
-            var invoiceItem = await _context.InvoiceItems.FindAsync(id);
-
-            if (invoiceItem == null)
+            var itemEntity = await _context.InvoiceItems
+                .Include(p => p.Product)
+                .Include(i => i.Invoice)
+                .ThenInclude(c => c.Client)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            
+            if (itemEntity == null)
             {
                 return NotFound();
             }
 
-            return invoiceItem;
+            var item = new InvoiceItemViewModel
+            {
+                Id = itemEntity.Id,
+                ProductId = itemEntity.ProductId,
+                InvoiceId = itemEntity.InvoiceId,
+                ClientId = itemEntity.Invoice.Client.Id,
+                ClientName = itemEntity.Invoice.Client.Name,
+                DateOfIssue = itemEntity.Invoice.DateOfIssue,
+                Quantity = itemEntity.Quantity,
+                Price = itemEntity.Price,
+                ProductName = itemEntity.Product.Name
+            };
+
+            return Ok(item);
         }
 
         // POST: api/InvoiceItems
