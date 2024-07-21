@@ -119,9 +119,8 @@ function InvoiceDetails() {
         </div>
       </div>
       <div className="invoice-items-list">
-        
-      </div>
         <InvoiceItemsTable items={invoiceItems}/>
+      </div>
     </div>
   );
 }

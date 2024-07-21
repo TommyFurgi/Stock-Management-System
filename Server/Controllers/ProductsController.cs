@@ -28,16 +28,32 @@ namespace Server.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null)
+            var productEntity = await _context.Products
+                .Include(i => i.InvoiceItems)
+                .FirstOrDefaultAsync(i => i.Id == id);
+            
+            if (productEntity == null)
             {
                 return NotFound();
             }
 
-            return product;
+            var items = productEntity.InvoiceItems.Select(i => i.Id).ToList();
+
+            var product = new ProductViewModel
+            {
+                Id = productEntity.Id,
+                Name = productEntity.Name,
+                Quantity = productEntity.Quantity,
+                Price = productEntity.Price,
+                AvailableFrom = productEntity.AvailableFrom,
+                Description = productEntity.Description,
+                ImageURL = productEntity.ImageURL,
+                invoiceItems = items
+            };
+
+            return Ok(product);
         }
 
         // POST: api/Products
