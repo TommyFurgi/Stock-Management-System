@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import './styles/App.css';
 import Menu from './components/Menu';
 import ClientsList from './components/ClientsList';
@@ -8,33 +7,31 @@ import Client from './components/Client';
 import Home from './components/Home';
 import ProductsList from './components/ProductsList';
 import Product from './components/Product';
-import InvoicesList from './components/InvoicesList'
-import Invoice from './components/Invoice'
+import InvoicesList from './components/InvoicesList';
+import Invoice from './components/Invoice';
 
 function App() {
+  const backgroundRef = useRef(null);
 
   useEffect(() => {
     const initVanta = async () => {
       try {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js');
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.21/vanta.fog.min.js');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r110/three.min.js'); 
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.21/vanta.waves.min.js');
         
-        if (window.VANTA) {
-          console.log("VANTA loaded successfully");
-          window.VANTA.FOG({
-            el: "#background",
+        if (window.VANTA && backgroundRef.current) {
+          window.VANTA.WAVES({
+            el: backgroundRef.current,
             mouseControls: false,
             touchControls: false,
             gyroControls: false,
             minHeight: 600.00,
             minWidth: 200.00,
-            highlightColor: 0x3f7bff,
-            lowlightColor: 0x1eff00,
-            baseColor: 0xfff9eb,
-            speed: 0.5
+            color: 0x5477a4,
+            speed: 0.25
           });
         } else {
-          console.log("VANTA is not defined");
+          console.log("VANTA is not defined or element not found");
         }
       } catch (error) {
         console.error("Failed to load scripts:", error);
@@ -42,7 +39,18 @@ function App() {
     };
   
     initVanta();
+
+    const backgroundElement = backgroundRef.current;
+  
+    return () => {
+      if (window.VANTA && backgroundElement) {
+        window.VANTA.WAVES({
+          el: backgroundElement
+        }).destroy();
+      }
+    };
   }, []);
+  
 
   const loadScript = (src) => {
     return new Promise((resolve, reject) => {
@@ -63,12 +71,8 @@ function App() {
 
   return (
     <div className="app">
-      <Helmet>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.21/vanta.fog.min.js"></script>
-      </Helmet>
       <Router>
-        <div id="background" ></div>
+        <div id="background" ref={backgroundRef} ></div>
         <div className="main-container">
           <Menu />
           <div className="content-container">
@@ -85,7 +89,6 @@ function App() {
         </div>
       </Router>
     </div>
-    
   );
 }
 
