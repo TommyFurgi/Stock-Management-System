@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
-import '../styles/Charts.css';
+import '../../styles/Charts.css';
 
 const ProductsQuantityOverTimeChart = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });

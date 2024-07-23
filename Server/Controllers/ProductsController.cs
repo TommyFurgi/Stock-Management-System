@@ -154,5 +154,79 @@ namespace Server.Controllers
             return Ok(cumulativeData);
         }
 
+        [HttpGet("product-transactions-over-time/{id}")]
+        public async Task<IActionResult> GetProductTransactions(int id)
+        {
+            var data = await _context.Products
+                .Where(p => p.Id == id)
+                .SelectMany(p => p.InvoiceItems)
+                .GroupBy(ii => new { ii.Invoice.DateOfIssue.Year, ii.Invoice.DateOfIssue.Month })
+                .OrderBy(g => g.Key.Year)
+                .ThenBy(g => g.Key.Month)
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TransactionCount = g.Count()
+                })
+                .ToListAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound("No data available");
+            }
+
+            return Ok(data);
+        }
+
+        [HttpGet("product-profit-over-time/{id}")]
+        public async Task<IActionResult> GetProductProfitOverTime(int id)
+        {
+            var data = await _context.Products
+                .Where(p => p.Id == id)
+                .SelectMany(p => p.InvoiceItems)
+                .GroupBy(ii => new { Year = ii.Invoice.DateOfIssue.Year, Month = ii.Invoice.DateOfIssue.Month })
+                .OrderBy(g => g.Key.Year)
+                .ThenBy(g => g.Key.Month)
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalProfit = g.Sum(ii => (double)ii.Quantity * (double)ii.Price) 
+                })
+                .ToListAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound("No data available");
+            }
+
+            return Ok(data);
+        }
+
+        [HttpGet("product-purchase-quantity-by-client/{productId}")]
+        public async Task<IActionResult> GetProductPurchaseQuantityByClient(int productId)
+        {
+            var data = await _context.Invoices
+                .SelectMany(i => i.InvoiceItems)
+                .Where(ii => ii.Product.Id == productId)
+                .GroupBy(ii => new { ii.Invoice.Client.Id, ii.Invoice.Client.Name })
+                .OrderBy(g => g.Key.Name)
+                .Select(g => new
+                {
+                    ClientId = g.Key.Id,
+                    ClientName = g.Key.Name,
+                    TotalQuantity = g.Sum(ii => ii.Quantity)
+                })
+                .ToListAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound("No data available for this product");
+            }
+
+            return Ok(data);
+        }
+
     }
 }
