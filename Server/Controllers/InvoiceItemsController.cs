@@ -116,5 +116,49 @@ namespace Server.Controllers
         {
             return _context.InvoiceItems.Any(e => e.Id == id);
         }
+
+        [HttpGet("top-sellers")]
+        public async Task<IActionResult> GetTopSellingProducts()
+        {
+            var topSellingProducts = await _context.InvoiceItems
+                .GroupBy(ii => ii.ProductId)
+                .Select(g => new
+                {
+                    Quantity = g.Sum(ii => ii.Quantity),
+                    ProductName = g.First().Product.Name
+                })
+                .OrderByDescending(p => p.Quantity)
+                .Take(8)
+                .ToListAsync();
+
+            if (topSellingProducts == null || !topSellingProducts.Any())
+            {
+                return NotFound("No data available");
+            }
+
+            return Ok(topSellingProducts);
+        }
+
+        [HttpGet("top-income")]
+        public async Task<IActionResult> GetTopIncomeProducts()
+        {
+            var topProfitableProducts = await _context.InvoiceItems
+                .GroupBy(ii => ii.ProductId)
+                .Select(g => new
+                {
+                    Income = g.Sum(ii => (double)ii.Quantity * (double)ii.Price),
+                    ProductName = g.First().Product.Name
+                })
+                .OrderByDescending(p => p.Income)
+                .Take(10)
+                .ToListAsync();
+
+            if (topProfitableProducts == null || !topProfitableProducts.Any())
+            {
+                return NotFound("No data available");
+            }
+
+            return Ok(topProfitableProducts);
+        }
     }
 }

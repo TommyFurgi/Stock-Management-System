@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ProductHistoryTable from './ProductHistoryTable';
+import ProductTransactionsOverTimeChart from "./charts/ProductTransactionsOverTimeChart"
+import ProductProfitOverTimeChart from "./charts/ProductProfitOverTimeChart"
+import ProductPurchaseQuantityByClientChart from "./charts/ProductPurchaseQuantityByClientChart"
 import "../styles/Profile.css";
+import "../styles/Charts.css";
 
 const defaultImage = '/images/default_product.png';
 
@@ -11,6 +15,7 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [items, setItems] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [fullscreenChart, setFullscreenChart] = useState(null);
   const [editedProduct, setEditedProduct] = useState({
     id: '',
     name: '',
@@ -26,7 +31,6 @@ function ProductDetails() {
   useEffect(() => {
     const fetchInvoiceDetails = async () => {
       try {
-        // Fetch product data
         const productResponse = await axios.get(`http://localhost:5193/api/products/${id}`);
         setProduct(productResponse.data);
         setEditedProduct({
@@ -39,7 +43,6 @@ function ProductDetails() {
           availableFrom: productResponse.data.availableFrom ? productResponse.data.availableFrom.split('T')[0] : '',
         });
 
-        // Fetch data for each invoice items
         if (productResponse.data && productResponse.data.invoiceItems && productResponse.data.invoiceItems.length > 0) {
           const itemRequests = productResponse.data.invoiceItems.map(itemId => 
             axios.get(`http://localhost:5193/api/invoiceItems/${itemId}`)
@@ -104,6 +107,16 @@ function ProductDetails() {
           setLoading(false);
         });
     }
+  };
+
+  const handleChartClick = (chartType) => {
+    setFullscreenChart(chartType);
+    document.body.classList.add('fullscreen-active'); 
+  };
+
+  const handleOverlayClick = () => {
+      setFullscreenChart(null);
+      document.body.classList.remove('fullscreen-active'); 
   };
 
   if (loading) {
@@ -213,6 +226,28 @@ function ProductDetails() {
       <div className="items-list">
         <ProductHistoryTable items={items}/>
       </div>
+      <div className={`charts-section ${fullscreenChart ? 'blurred' : ''}`}>
+        <div className="chart-container" onClick={() => handleChartClick('transactions')}>
+          <ProductTransactionsOverTimeChart productId={id} />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('profit')}>
+          <ProductProfitOverTimeChart productId={id} />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('quantity')}>
+          <ProductPurchaseQuantityByClientChart productId={id} />
+        </div>
+      </div>
+
+      {fullscreenChart && (
+        <div className="fullscreen-chart" onClick={handleOverlayClick}>
+          <div className="chart-container" onClick={(e) => e.stopPropagation()}>
+            {fullscreenChart === 'transactions' && <ProductTransactionsOverTimeChart productId={id} />}
+            {fullscreenChart === 'profit' && <ProductProfitOverTimeChart productId={id} />}
+            {fullscreenChart === 'quantity' && <ProductPurchaseQuantityByClientChart productId={id} />}
+        </div>
+        </div>
+      )}
+
     </div>
   );
 }

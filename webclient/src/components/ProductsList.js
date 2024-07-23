@@ -6,7 +6,10 @@ import '../styles/ProductsList.css';
 import '../styles/Table.css';
 import '../styles/Filter.css';
 import AddNewProduct from './AddNewProduct';
-import ProductsQuantityOverTimeChart from './ProductsQuantityOverTimeChart';
+import ProductsQuantityOverTimeChart from './charts/ProductsQuantityOverTimeChart';
+import TopSellerProductsChart from './charts/TopSellerProductsChart';
+import TopProfitProductsChart from './charts/TopProfitProductsChart';
+import '../styles/Charts.css';
 
 function ProductsList() {
   const [products, setProducts] = useState([]);
@@ -20,6 +23,7 @@ function ProductsList() {
   const [initialMaxQuantity, setInitialMaxQuantity] = useState(500);
   const [dateRange, setDateRange] = useState(['', '']);
   const [sortOption, setSortOption] = useState('name-asc');
+  const [fullscreenChart, setFullscreenChart] = useState(null);
   const productsPerPage = 25;
 
   useEffect(() => {
@@ -117,6 +121,16 @@ function ProductsList() {
     );
   });
 
+  const handleChartClick = (chartType) => {
+    setFullscreenChart(chartType);
+    document.body.classList.add('fullscreen-active'); 
+  };
+
+  const handleOverlayClick = () => {
+      setFullscreenChart(null);
+      document.body.classList.remove('fullscreen-active'); 
+  };
+
   const handleResetFilters = () => {
     setSearchTerm('');
     setMinPrice(0);
@@ -204,7 +218,6 @@ function ProductsList() {
               <button onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
             )}
           </div>
-          <ProductsQuantityOverTimeChart />
         </div>
         <div className="side-container">
           
@@ -310,6 +323,27 @@ function ProductsList() {
           <AddNewProduct />
         </div>
       </div>
+      <div className={`charts-section ${fullscreenChart ? 'blurred' : ''}`}>
+        <div className="chart-container" onClick={() => handleChartClick('transactions')}>
+          <ProductsQuantityOverTimeChart />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('profit')}>
+          <TopSellerProductsChart />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('quantity')}>
+          <TopProfitProductsChart />
+        </div>
+      </div>
+
+      {fullscreenChart && (
+        <div className="fullscreen-chart" onClick={handleOverlayClick}>
+          <div className="chart-container" onClick={(e) => e.stopPropagation()}>
+            {fullscreenChart === 'transactions' && <ProductsQuantityOverTimeChart />}
+            {fullscreenChart === 'profit' && <TopSellerProductsChart />}
+            {fullscreenChart === 'quantity' && <TopProfitProductsChart />}
+        </div>
+        </div>
+      )}
     </div>
   );
 }
