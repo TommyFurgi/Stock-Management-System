@@ -125,16 +125,17 @@ namespace Server.Controllers
 
             return Ok(new { MaxPrice = maxPrice, MaxQuantity = maxQuantity });
         }
-
+        
         [HttpGet("quantity-over-time")]
         public async Task<IActionResult> GetQuantityOverTime()
         {
             var data = await _context.Products
-                .GroupBy(p => p.AvailableFrom)
-                .OrderBy(g => g.Key)
+                .GroupBy(p => new { p.AvailableFrom.Year, p.AvailableFrom.Month })
+                .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
                 .Select(g => new
                 {
-                    Date = g.Key,
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
                     Count = g.Count()
                 })
                 .ToListAsync();
@@ -147,7 +148,8 @@ namespace Server.Controllers
             int cumulativeQuantity = 0;
             var cumulativeData = data.Select(d => new
             {
-                Date = d.Date,
+                Year = d.Year,
+                Month = d.Month,
                 CumulativeQuantity = (cumulativeQuantity += d.Count)
             }).ToList();
 

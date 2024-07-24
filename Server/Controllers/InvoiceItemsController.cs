@@ -160,5 +160,29 @@ namespace Server.Controllers
 
             return Ok(topProfitableProducts);
         }
+
+        [HttpGet("items-prices/{invoiceId}")]
+        public async Task<IActionResult> GetItemsPrices(int invoiceId)
+        {
+            var items = await _context.InvoiceItems
+                .Include(p => p.Product)
+                .Where(i => i.InvoiceId == invoiceId)
+                .Select(g => new
+                {
+                    ProductName = g.Product.Name,
+                    Price = g.Price
+                })
+                .ToListAsync();
+
+            if (items == null || !items.Any())
+            {
+                return NotFound("No items found for the specified invoice");
+            }
+
+            var sortedItems = items.OrderByDescending(i => i.Price).ToList();
+
+            return Ok(sortedItems);
+        }
+
     }
 }

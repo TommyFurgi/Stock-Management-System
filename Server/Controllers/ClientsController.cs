@@ -112,5 +112,81 @@ namespace Server.Controllers
         {
             return _context.Clients.Any(e => e.Id == id);
         }
+
+        
+        [HttpGet("client-transactions-over-time/{id}")]
+        public async Task<IActionResult> GetClientTransactions(int id)
+        {
+            var data = await _context.Clients
+                .Where(c => c.Id == id)
+                .SelectMany(c => c.Invoices)
+                .GroupBy(i => new { i.DateOfIssue.Year, i.DateOfIssue.Month })
+                .OrderBy(g => g.Key.Year)
+                .ThenBy(g => g.Key.Month)
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TransactionCount = g.Count() 
+                })
+                .ToListAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound("No data available for the specified client.");
+            }
+
+            return Ok(data);
+        }
+
+        [HttpGet("client-money-spent-over-time/{id}")]
+        public async Task<IActionResult> GetClientMoneySpent(int id)
+        {
+            var data = await _context.Clients
+                .Where(c => c.Id == id)
+                .SelectMany(c => c.Invoices)
+                .GroupBy(i => new { i.DateOfIssue.Year, i.DateOfIssue.Month })
+                .OrderBy(g => g.Key.Year)
+                .ThenBy(g => g.Key.Month)
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    MoneySpent = g.Sum(i => (double)i.TotalAmount)
+                })
+                .ToListAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound("No data available for the specified client.");
+            }
+
+            return Ok(data);
+        }
+
+        [HttpGet("top-products/{id}")]
+        public async Task<IActionResult> GetTopProductsByClient(int id)
+        {
+            var data = await _context.Clients
+                .Where(c => c.Id == id)
+                .SelectMany(c => c.Invoices)
+                .SelectMany(i => i.InvoiceItems)
+                .GroupBy(ii => ii.Product.Name)
+                .OrderByDescending(g => g.Sum(ii => ii.Quantity))
+                .Take(10)
+                .Select(g => new
+                {
+                    ProductName = g.Key,
+                    TotalQuantity = g.Sum(ii => ii.Quantity)
+                })
+                .ToListAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound("No data available for the specified client.");
+            }
+
+            return Ok(data);
+        }
     }
 }

@@ -137,5 +137,50 @@ namespace Server.Controllers
         {
             return _context.Invoices.Any(e => e.Id == id);
         }
+
+        [HttpGet("cumulative-invoices-over-time")]
+        public async Task<IActionResult> GetCumulativeInvoicesOverTime()
+        {
+            var cumulativeData = await _context.Invoices
+                .GroupBy(i => new { i.DateOfIssue.Year, i.DateOfIssue.Month })
+                .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    CumulativeCount = g.Count()
+                })
+                .ToListAsync();
+
+            if (cumulativeData == null || !cumulativeData.Any())
+            { 
+                return NotFound("No data available");
+            }
+
+            return Ok(cumulativeData);
+        }
+        
+        [HttpGet("total-profit-over-time")]
+        public async Task<IActionResult> GetTotalProfitOverTime()
+        {
+            var profitData = await _context.Invoices
+                .GroupBy(i => new { i.DateOfIssue.Year, i.DateOfIssue.Month })
+                .OrderBy(g => g.Key.Year)
+                .ThenBy(g => g.Key.Month)
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalProfit = g.Sum(i => (double)i.TotalAmount)
+                })
+                .ToListAsync();
+
+            if (profitData == null || !profitData.Any())
+            {
+                return NotFound("No data available");
+            }
+
+            return Ok(profitData);
+        }
     }
 }
