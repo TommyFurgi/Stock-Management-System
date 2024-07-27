@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2'; 
+import { Line } from 'react-chartjs-2';
 import axios from 'axios';
 import 'chart.js/auto';
 import '../../styles/Charts.css';
 
-const ProductTransactionsOverTimeChart = () => {
+const LineChartCreator = ({ title, endpoint, labelField = '', dataField, agenda, color = 'rgba(75, 192, 192, 1)', backgroundColor = 'rgba(75, 192, 192, 0.2)', dateLabels = false }) => {
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -12,24 +12,30 @@ const ProductTransactionsOverTimeChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/InvoiceItems/top-sellers`);
+                const response = await axios.get(endpoint);
                 const data = response.data;
 
                 if (!Array.isArray(data)) {
                     throw new Error('Expected data to be an array');
                 }
 
-                const labels = data.map(item => item.productName);
-                const quantities = data.map(item => item.quantity);
+                const validData = data.filter(item => (dateLabels ? (item.year !== undefined && item.month !== undefined) : item[labelField] !== undefined) && item[dataField] !== undefined);
+
+                if (validData.length === 0) {
+                    throw new Error('No valid data available');
+                }
+
+                const labels = dateLabels ? validData.map(item => `${item.year}-${item.month.toString().padStart(2, '0')}`) : validData.map(item => item[labelField]);
+                const dataset = validData.map(item => item[dataField]);
 
                 setChartData({
                     labels,
                     datasets: [
                         {
-                            label: 'Quantity Sold',
-                            data: quantities,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                            label: agenda,
+                            data: dataset,
+                            borderColor: color,
+                            backgroundColor: backgroundColor,
                             fill: true,
                         },
                     ],
@@ -43,16 +49,16 @@ const ProductTransactionsOverTimeChart = () => {
         };
 
         fetchData();
-    }, []);
+    }, [endpoint, labelField, dataField, agenda, title, color, backgroundColor, dateLabels]);
 
     return (
         <div className="products-chart-container">
-            <h2>Top 8 Best Selling Products</h2>
+            <h2>{title}</h2>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            {!loading && !error && <Bar data={chartData} />}
+            {!loading && !error && <Line data={chartData} />}
         </div>
     );
 };
 
-export default ProductTransactionsOverTimeChart;
+export default LineChartCreator;

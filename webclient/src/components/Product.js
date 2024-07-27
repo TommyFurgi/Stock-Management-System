@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ProductHistoryTable from './ProductHistoryTable';
-import ProductTransactionsOverTimeChart from "./charts/ProductTransactionsOverTimeChart"
-import ProductProfitOverTimeChart from "./charts/ProductProfitOverTimeChart"
-import ProductPurchaseQuantityByClientChart from "./charts/ProductPurchaseQuantityByClientChart"
+import LineChartCreator from "./charts/LineChartCreator"
+import BarChartCreator from "./charts/BarChartCreator"
 import "../styles/Profile.css";
 import "../styles/Charts.css";
 
@@ -228,23 +227,66 @@ function ProductDetails() {
       </div>
       <div className={`charts-section ${fullscreenChart ? 'blurred' : ''}`}>
         <div className="chart-container" onClick={() => handleChartClick('transactions')}>
-          <ProductTransactionsOverTimeChart productId={id} />
+          <LineChartCreator 
+              title="Number of Transactions Over Time"
+              endpoint={`/api/Products/product-transactions-over-time/${id}`}
+              dataField="transactionCount"
+              dateLabels={true}
+              agenda="Number of Transactions"
+          />
         </div>
         <div className="chart-container" onClick={() => handleChartClick('profit')}>
-          <ProductProfitOverTimeChart productId={id} />
+          <LineChartCreator 
+              title="Profit on Product Over Time"
+              endpoint={`/api/Products/product-profit-over-time/${id}`}
+              dataField="totalProfit"
+              dateLabels={true}
+              color="rgba(255, 99, 132, 1)"
+              backgroundColor="rgba(255, 99, 132, 0.2)"
+              agenda="Total Profit"
+          />
         </div>
         <div className="chart-container" onClick={() => handleChartClick('quantity')}>
-          <ProductPurchaseQuantityByClientChart productId={id} />
+          <BarChartCreator 
+              title="Quantity Purchased by Client"
+              endpoint={`/api/Products/product-purchase-quantity-by-client/${id}`}
+              labelField="clientName"
+              dataField="totalQuantity"
+              agenda="Products Purchased"
+          />
         </div>
       </div>
 
       {fullscreenChart && (
         <div className="fullscreen-chart" onClick={handleOverlayClick}>
           <div className="chart-container" onClick={(e) => e.stopPropagation()}>
-            {fullscreenChart === 'transactions' && <ProductTransactionsOverTimeChart productId={id} />}
-            {fullscreenChart === 'profit' && <ProductProfitOverTimeChart productId={id} />}
-            {fullscreenChart === 'quantity' && <ProductPurchaseQuantityByClientChart productId={id} />}
-        </div>
+            {fullscreenChart === 'transactions' && 
+            <LineChartCreator 
+              title="Number of Transactions Over Time"
+              endpoint={`/api/Products/product-transactions-over-time/${id}`}
+              dataField="transactionCount"
+              dateLabels={true}
+              agenda="Number of Transactions"
+            />}
+            {fullscreenChart === 'profit' && 
+            <LineChartCreator 
+              title="Profit on Product Over Time"
+              endpoint={`/api/Products/product-profit-over-time/${id}`}
+              dataField="totalProfit"
+              dateLabels={true}
+              color="rgba(255, 99, 132, 1)"
+              backgroundColor="rgba(255, 99, 132, 0.2)"
+              agenda="Total Profit"
+            />}
+            {fullscreenChart === 'quantity' && 
+            <BarChartCreator 
+              title="Quantity Purchased by Client"
+              endpoint={`/api/Products/product-purchase-quantity-by-client/${id}`}
+              labelField="clientName"
+              dataField="totalQuantity"
+              agenda="Products Purchased"
+            />}
+          </div>
         </div>
       )}
 

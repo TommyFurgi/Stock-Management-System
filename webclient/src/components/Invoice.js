@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import InvoiceItemsTable from './InvoiceItemsTable';
+import BarChartCreator from "./charts/BarChartCreator"
+import PieChartCreator from "./charts/PieChartCreator"
+import '../styles/Charts.css';
 import "../styles/Invoice.css";
 import "../styles/Profile.css";
 
@@ -10,8 +13,8 @@ function InvoiceDetails() {
   const [invoice, setInvoice] = useState(null);
   const [client, setClient] = useState(null);
   const [invoiceItems, setInvoiceItems] = useState([]);
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fullscreenChart, setFullscreenChart] = useState(null);
 
   useEffect(() => {
     const fetchInvoiceDetails = async () => {
@@ -39,7 +42,6 @@ function InvoiceDetails() {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError(error.message);
         setLoading(false);
       }
     };
@@ -54,6 +56,16 @@ function InvoiceDetails() {
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const handleChartClick = (chartType) => {
+    setFullscreenChart(chartType);
+    document.body.classList.add('fullscreen-active'); 
+  };
+
+  const handleOverlayClick = () => {
+      setFullscreenChart(null);
+      document.body.classList.remove('fullscreen-active'); 
   };
 
   return (
@@ -121,6 +133,50 @@ function InvoiceDetails() {
       <div className="invoice-items-list">
         <InvoiceItemsTable items={invoiceItems}/>
       </div>
+      
+      <div className={`charts-section ${fullscreenChart ? 'blurred' : ''}`}>
+        <div className="chart-container" onClick={() => handleChartClick('price-bar-chart')}>
+          <BarChartCreator 
+              title="Product Prices on Invoice"
+              endpoint={`/api/InvoiceItems/items-prices/${id}`}
+              labelField="productName"
+              dataField="price"
+              agenda="Invoice Pricing Details"
+          />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('price-pie-chart')}>
+          <PieChartCreator 
+              title="Product Prices Overview"
+              endpoint={`/api/InvoiceItems/items-prices/${id}`}
+              labelField="productName"
+              dataField="price"
+          />
+        </div>
+      </div>
+
+      {fullscreenChart && (
+        <div className="fullscreen-chart" onClick={handleOverlayClick}>
+          <div className="chart-container" onClick={(e) => e.stopPropagation()}>
+            {fullscreenChart === 'price-bar-chart' && 
+            <BarChartCreator 
+              title="Product Prices on Invoice"
+              endpoint={`/api/InvoiceItems/items-prices/${id}`}
+              labelField="productName"
+              dataField="price"
+              agenda="Invoice Pricing Details"
+            />}
+            {fullscreenChart === 'price-pie-chart' && 
+            <PieChartCreator 
+              title="Product Prices Overview"
+              endpoint={`/api/InvoiceItems/items-prices/${id}`}
+              labelField="productName"
+              dataField="price"
+            />}
+
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }

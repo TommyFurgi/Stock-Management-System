@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import axios from 'axios';
 import 'chart.js/auto';
 import '../../styles/Charts.css';
 
-const ProductTransactionsOverTimeChart = ({ productId }) => {
+const LineChartCreator = ({ title, endpoint, labelField = '', dataField, agenda, backgroundColor = 'rgba(75, 192, 192, 0.5)', borderColor = 'rgba(75, 192, 192, 1)', dateLabels = false }) => {
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -12,32 +12,31 @@ const ProductTransactionsOverTimeChart = ({ productId }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/Products/product-transactions-over-time/${productId}`);
+                const response = await axios.get(endpoint);
                 const data = response.data;
 
                 if (!Array.isArray(data)) {
                     throw new Error('Expected data to be an array');
                 }
 
-                const validData = data.filter(item => item.year && item.month !== undefined && item.transactionCount !== undefined);
+                const validData = data.filter(item => (dateLabels ? (item.year !== undefined && item.month !== undefined) : item[labelField] !== undefined) && item[dataField] !== undefined);
 
                 if (validData.length === 0) {
                     throw new Error('No valid data available');
                 }
 
-                const labels = validData.map(item => `${item.year}-${item.month.toString().padStart(2, '0')}`);
-                const transactionCounts = validData.map(item => item.transactionCount);
-                console.log(validData);
+                const labels = dateLabels ? validData.map(item => `${item.year}-${item.month.toString().padStart(2, '0')}`) : validData.map(item => item[labelField]);
+                const dataset = validData.map(item => item[dataField]);
 
                 setChartData({
                     labels,
                     datasets: [
                         {
-                            label: 'Number of Transactions',
-                            data: transactionCounts,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            fill: true,
+                            label: agenda,
+                            data: dataset,
+                            backgroundColor: backgroundColor,
+                            borderColor: borderColor,
+                            borderWidth: 1, 
                         },
                     ],
                 });
@@ -50,16 +49,16 @@ const ProductTransactionsOverTimeChart = ({ productId }) => {
         };
 
         fetchData();
-    }, [productId]);
+    }, [endpoint, labelField, dataField, agenda, title, backgroundColor, borderColor, dateLabels]);
 
     return (
         <div className="products-chart-container">
-            <h2>Transactions Over Time</h2>
+            <h2>{title}</h2>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            {!loading && !error && <Line data={chartData} />}
+            {!loading && !error && <Bar data={chartData} />}
         </div>
     );
 };
 
-export default ProductTransactionsOverTimeChart;
+export default LineChartCreator;
