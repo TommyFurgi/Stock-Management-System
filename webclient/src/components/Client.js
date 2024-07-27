@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import InvoiceTableWithFilter from './InvoiceTableWithFilter';
+import LineChartCreator from "./charts/LineChartCreator"
+import BarChartCreator from "./charts/BarChartCreator"
+import '../styles/Charts.css';
 import "../styles/Profile.css";
 import "../styles/Table.css";
 
@@ -17,6 +20,7 @@ function ClientDetails() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
+  const [fullscreenChart, setFullscreenChart] = useState(null);
 
   useEffect(() => {
     const fetchClientDetails = async () => {
@@ -80,6 +84,16 @@ function ClientDetails() {
           setLoading(false); 
         });
     }
+  };
+
+  const handleChartClick = (chartType) => {
+    setFullscreenChart(chartType);
+    document.body.classList.add('fullscreen-active'); 
+  };
+
+  const handleOverlayClick = () => {
+      setFullscreenChart(null);
+      document.body.classList.remove('fullscreen-active'); 
   };
 
   return (
@@ -148,9 +162,72 @@ function ClientDetails() {
           )}
         </div>
       </div>
-
       <InvoiceTableWithFilter invoices={invoices} clientName={client?.name || ""} />     
         
+      <div className={`charts-section ${fullscreenChart ? 'blurred' : ''}`}>
+        <div className="chart-container" onClick={() => handleChartClick('transactions')}>
+          <LineChartCreator 
+              title="Client Transaction Over the Time"
+              endpoint={`/api/Clients/client-transactions-over-time/${id}`}
+              dataField="transactionCount"
+              dateLabels={true}
+              agenda="Number of Client's transactions"
+          />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('money-spent')}>
+          <LineChartCreator 
+              title="Money Spent by Client in Each Month"
+              endpoint={`/api/Clients/client-money-spent-over-time/${id}`}
+              dataField="moneySpent"
+              dateLabels={true}
+              agenda="Money Spent"
+          />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('buying-products')}>
+          <BarChartCreator 
+              title="Top 10 Most Often Buying Product"
+              endpoint={`/api/Clients/top-products/${id}`}
+              labelField="productName"
+              dataField="totalQuantity"
+              backgroundColor="rgba(255, 99, 132, 0.5)"
+              borderColor="rgba(255, 99, 132, 1)"
+              agenda="The Number of Items"
+          />
+        </div>
+      </div>
+
+      {fullscreenChart && (
+        <div className="fullscreen-chart" onClick={handleOverlayClick}>
+          <div className="chart-container" onClick={(e) => e.stopPropagation()}>
+            {fullscreenChart === 'transactions' && 
+            <LineChartCreator 
+              title="Client Transaction Over the Time"
+              endpoint={`/api/Clients/client-transactions-over-time/${id}`}
+              dataField="transactionCount"
+              dateLabels={true}
+              agenda="Number of Client's transactions"
+            />}
+            {fullscreenChart === 'money-spent' && 
+            <LineChartCreator 
+              title="Money Spent by Client in Each Month"
+              endpoint={`/api/Clients/client-money-spent-over-time/${id}`}
+              dataField="moneySpent"
+              dateLabels={true}
+              agenda="Money Spent"
+            />}
+            {fullscreenChart === 'buying-products' && 
+            <BarChartCreator 
+              title="Top 10 Most Often Buying Product"
+              endpoint={`/api/Clients/top-products/${id}`}
+              labelField="productName"
+              dataField="totalQuantity"
+              backgroundColor="rgba(255, 99, 132, 0.5)"
+              borderColor="rgba(255, 99, 132, 1)"
+              agenda="The Number of Items"
+            />}
+        </div>
+        </div>
+      )}
     </div>
      
   );

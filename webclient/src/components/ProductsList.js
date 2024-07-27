@@ -6,9 +6,8 @@ import '../styles/ProductsList.css';
 import '../styles/Table.css';
 import '../styles/Filter.css';
 import AddNewProduct from './AddNewProduct';
-import ProductsQuantityOverTimeChart from './charts/ProductsQuantityOverTimeChart';
-import TopSellerProductsChart from './charts/TopSellerProductsChart';
-import TopProfitProductsChart from './charts/TopProfitProductsChart';
+import LineChartCreator from "./charts/LineChartCreator"
+import BarChartCreator from "./charts/BarChartCreator"
 import '../styles/Charts.css';
 
 function ProductsList() {
@@ -324,23 +323,62 @@ function ProductsList() {
         </div>
       </div>
       <div className={`charts-section ${fullscreenChart ? 'blurred' : ''}`}>
-        <div className="chart-container" onClick={() => handleChartClick('transactions')}>
-          <ProductsQuantityOverTimeChart />
-        </div>
-        <div className="chart-container" onClick={() => handleChartClick('profit')}>
-          <TopSellerProductsChart />
-        </div>
         <div className="chart-container" onClick={() => handleChartClick('quantity')}>
-          <TopProfitProductsChart />
+          <LineChartCreator 
+              title="Products Cumulative Quantity Over Time"
+              endpoint={`/api/products/quantity-over-time`}
+              dataField="cumulativeQuantity"
+              dateLabels={true}
+              agenda="Cumulative Quantity Over Time"
+          />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('sellers')}>
+          <BarChartCreator 
+              title="Top 8 Best Selling Products"
+              endpoint={`/api/InvoiceItems/top-sellers`}
+              labelField="productName"
+              dataField="quantity"
+              agenda="Quantity Sold"
+          />
+        </div>
+        <div className="chart-container" onClick={() => handleChartClick('income')}>
+          <BarChartCreator 
+              title="Top 10 Products Generating Best Income"
+              endpoint={`/api/InvoiceItems/top-income`}
+              labelField="productName"
+              dataField="income"
+              agenda="Income Generated"
+          />
         </div>
       </div>
 
       {fullscreenChart && (
         <div className="fullscreen-chart" onClick={handleOverlayClick}>
           <div className="chart-container" onClick={(e) => e.stopPropagation()}>
-            {fullscreenChart === 'transactions' && <ProductsQuantityOverTimeChart />}
-            {fullscreenChart === 'profit' && <TopSellerProductsChart />}
-            {fullscreenChart === 'quantity' && <TopProfitProductsChart />}
+            {fullscreenChart === 'quantity' && 
+            <LineChartCreator 
+              title="Products Cumulative Quantity Over Time"
+              endpoint={`/api/products/quantity-over-time`}
+              dataField="cumulativeQuantity"
+              dateLabels={true}
+              agenda="Cumulative Quantity Over Time"
+            />}
+            {fullscreenChart === 'sellers' && 
+            <BarChartCreator 
+              title="Top 8 Best Selling Products"
+              endpoint={`/api/InvoiceItems/top-sellers`}
+              labelField="productName"
+              dataField="quantity"
+              agenda="Quantity Sold"
+            />}
+            {fullscreenChart === 'income' && 
+            <BarChartCreator 
+              title="Top 10 Products Generating Best Income"
+              endpoint={`/api/InvoiceItems/top-income`}
+              labelField="productName"
+              dataField="income"
+              agenda="Income Generated"
+            />}
         </div>
         </div>
       )}
