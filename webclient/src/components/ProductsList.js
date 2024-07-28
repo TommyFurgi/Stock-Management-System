@@ -6,8 +6,8 @@ import '../styles/ProductsList.css';
 import '../styles/Table.css';
 import '../styles/Filter.css';
 import AddNewProduct from './AddNewProduct';
-import LineChartCreator from "./charts/LineChartCreator"
-import BarChartCreator from "./charts/BarChartCreator"
+import LineChartCreator from "./charts/LineChartCreator";
+import BarChartCreator from "./charts/BarChartCreator";
 import '../styles/Charts.css';
 
 function ProductsList() {
