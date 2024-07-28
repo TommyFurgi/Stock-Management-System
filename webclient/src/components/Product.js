@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ProductHistoryTable from './ProductHistoryTable';
-import LineChartCreator from "./charts/LineChartCreator"
-import BarChartCreator from "./charts/BarChartCreator"
+import LineChartCreator from "./charts/LineChartCreator";
+import BarChartCreator from "./charts/BarChartCreator";
 import "../styles/Profile.css";
 import "../styles/Charts.css";
 
@@ -24,6 +24,7 @@ function ProductDetails() {
     imageURL: '',
     availableFrom: '',
   });
+  const [increasedQuantity, setIncreasedQuantity] = useState(0);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -67,6 +68,47 @@ function ProductDetails() {
     setEditedProduct({ ...editedProduct, [name]: name === 'quantity' ? parseInt(value, 10) : value });
   };
 
+  const handleQuantityChange = (e) => {
+    const value = e.target.value;
+    const parsedValue = parseInt(value, 10);
+  
+    if (value === '' || parsedValue >= 0) {
+      setIncreasedQuantity(parsedValue);
+    }
+  };
+  
+
+  const updateProductQuantity = async (quantity) => {
+    if (quantity == null || quantity === '') {
+      alert('Quantity cannot be empty');
+      return;
+    }
+    const parsedValue = parseInt(quantity, 10);
+    
+    setLoading(true);
+    try {
+      await axios.put(`http://localhost:5193/api/products/increase-product-quantity-by/${id}`, parsedValue, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      setProduct(prevProduct => ({
+        ...prevProduct,
+        quantity: prevProduct.quantity + parsedValue
+      }));
+      setEditedProduct(prevEditedProduct => ({
+        ...prevEditedProduct,
+        quantity: prevEditedProduct.quantity + parsedValue
+      }));
+      setIncreasedQuantity(0);
+      setErrors({});
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const validate = () => {
     const errors = {};
     if (!editedProduct.name) errors.name = "Name is required.";
@@ -217,7 +259,19 @@ function ProductDetails() {
                 <p>{formatDate(product.availableFrom)}</p>
               </div>
 
-              <button className="edit-button" onClick={() => setEditMode(true)}>Edit Product</button>
+              <div className="buttons-container">
+                <button className="edit-button" onClick={() => setEditMode(true)}>Edit Product</button>
+
+                <div className="increase-quantity-container">
+                  <input 
+                    type="number" 
+                    value={increasedQuantity} 
+                    onChange={handleQuantityChange} 
+                  />
+                  <button className="increase-button" onClick={() => updateProductQuantity(increasedQuantity)}>Increase Quantity</button>
+                </div>
+              </div>
+
             </div>
           )}
         </div>

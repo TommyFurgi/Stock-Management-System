@@ -213,13 +213,13 @@ namespace Server.Controllers
                 .SelectMany(i => i.InvoiceItems)
                 .Where(ii => ii.Product.Id == productId)
                 .GroupBy(ii => new { ii.Invoice.Client.Id, ii.Invoice.Client.Name })
-                .OrderBy(g => g.Key.Name)
                 .Select(g => new
                 {
                     ClientId = g.Key.Id,
                     ClientName = g.Key.Name,
                     TotalQuantity = g.Sum(ii => ii.Quantity)
                 })
+                .OrderByDescending(g => g.TotalQuantity)
                 .ToListAsync();
 
             if (data == null || !data.Any())
@@ -228,6 +228,41 @@ namespace Server.Controllers
             }
 
             return Ok(data);
+        }
+
+        [HttpPut("increase-product-quantity-by/{id}")]
+        public async Task<IActionResult> IncreaseProductQuantityBy(int id, [FromBody] int newQuantity)
+        {
+            if (newQuantity < 0)
+            {
+                return BadRequest("Quantity to increase must be a positive number.");
+            }
+
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.Quantity += newQuantity;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
     }

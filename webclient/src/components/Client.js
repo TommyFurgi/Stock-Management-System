@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import InvoiceTableWithFilter from './InvoiceTableWithFilter';
-import LineChartCreator from "./charts/LineChartCreator"
-import BarChartCreator from "./charts/BarChartCreator"
+import LineChartCreator from "./charts/LineChartCreator";
+import BarChartCreator from "./charts/BarChartCreator";
 import '../styles/Charts.css';
 import "../styles/Profile.css";
 import "../styles/Table.css";

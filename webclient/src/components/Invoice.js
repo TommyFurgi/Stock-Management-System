@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import InvoiceItemsTable from './InvoiceItemsTable';
-import BarChartCreator from "./charts/BarChartCreator"
-import PieChartCreator from "./charts/PieChartCreator"
+import BarChartCreator from "./charts/BarChartCreator";
+import PieChartCreator from "./charts/PieChartCreator";
 import '../styles/Charts.css';
 import "../styles/Invoice.css";
 import "../styles/Profile.css";

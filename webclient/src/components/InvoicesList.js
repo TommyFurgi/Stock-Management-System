@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import InvoiceTableWithFilter from './InvoiceTableWithFilter';
-import LineChartCreator from "./charts/LineChartCreator"
+import LineChartCreator from "./charts/LineChartCreator";
 import '../styles/Charts.css';
 import '../styles/InvoicesList.css';
 import '../styles/Table.css';
