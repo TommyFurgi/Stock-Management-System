@@ -46,16 +46,19 @@
   margin: 10px 0;
 }
 
-.profile-info .edit-button {
+.profile-info .edit-button,
+.profile-info .increase-button {
   display: block;
-  margin-top: 20px;
   padding: 10px 20px;
   font-size: 16px;
   color: white;
-  background-color: #007bff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.profile-info .edit-button {
+  background-color: #007bff;
 }
 
 .profile-info .edit-button:hover {
@@ -149,4 +152,32 @@
 
 .profile-link-button:hover {
   background-color: #0056b3;
+}
+
+.buttons-container {
+  display: flex;
+  align-items: center; 
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.increase-quantity-container {
+  display: flex;
+  align-items: center; 
+  gap: 5px;
+}
+
+.increase-quantity-container input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.increase-quantity-container .increase-button {
+  background-color: #ffa600;
+}
+
+.increase-quantity-container .increase-button:hover {
+  background-color: #c07d00;
 }
