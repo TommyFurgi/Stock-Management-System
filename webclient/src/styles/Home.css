@@ -1,0 +1,26 @@
+.home-container {
+    display: block;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.home-container h1 {
+    margin: 20px 0 20px 80px;
+    text-align: left;
+    font-size: 48px;
+}   
+
+.home-container p,
+.home-container li {
+    text-align: left;
+    font-size: 20px;
+    text-align: justify;
+}   
+
+.home-container li {
+    margin-left: 20px;
+    width: 90%;
+    padding: 2px;
+}
